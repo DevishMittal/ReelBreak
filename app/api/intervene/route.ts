@@ -38,6 +38,7 @@ export async function GET() {
         const platform = Object.keys(PLATFORMS).find((key) => url.includes(key));
         if (platform) {
           const currentTimestamp = item.content.timestamp;
+          if (settings.lastReset && new Date(currentTimestamp) < new Date(settings.lastReset)) continue;
           if (lastTimestamp) {
             const duration = (new Date(currentTimestamp).getTime() - new Date(lastTimestamp).getTime()) / 1000;
             if (duration > 0) {
@@ -53,14 +54,18 @@ export async function GET() {
       }
     }
 
-    const updatedHistory = [...settings.usageHistory, ...usage];
-    await updateSettings({ usageHistory: updatedHistory });
+    // Deduplicate by timestamp
+    const existingTimestamps = new Set(settings.usageHistory.map(entry => entry.timestamp));
+    const newUsage = usage.filter(entry => !existingTimestamps.has(entry.timestamp));
+    const updatedHistory = [...settings.usageHistory, ...newUsage];
+    const cleanHistory = updatedHistory.filter(entry => entry.duration > 0);
+    await updateSettings({ usageHistory: cleanHistory });
 
     const today = new Date().toISOString().split("T")[0];
-    const todayUsage = updatedHistory
+    const todayUsage = cleanHistory
       .filter((entry) => new Date(entry.timestamp).toISOString().split("T")[0] === today)
       .reduce((sum, entry) => sum + (entry.duration || 0), 0) / 60;
-    console.log("Total usage today (minutes):", todayUsage); // Only log total usage
+    console.log("Total usage today (minutes):", todayUsage);
 
     if (todayUsage > settings.interventionThreshold) {
       try {
