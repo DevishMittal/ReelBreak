@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/intervene",
+      "schedule": "0 */5 * * *" 
+    }
+  ]
+}
