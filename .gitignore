@@ -34,3 +34,78 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+reset.js
+# Next.js build outputs
+.next/
+out/
+dist/
+build/
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Screenpipe specific
+.screenpipe/
+db.sqlite
+*.db
+
+# Cache
+.cache/
+.eslintcache
+.vercel
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# Debug logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local Netlify folder
+.netlify
+
+# TypeScript cache
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing
+coverage/
+
+# Media files (optional, depending on your needs)
+# *.mp4
+# *.mp3
+# *.wav
+
+# Large binary files
+*.exe
+*.zip
+*.tar.gz
