@@ -1,36 +1,106 @@
-# screenpipe playground
+Sure! Here's your content nicely formatted into a `README.md` file you can paste directly into VS Code:
 
-a flexible playground for displaying, testing, and exploring components with their associated code, documentation, and ai prompts.
+```markdown
+# ReelBreak
 
-<!-- <img width="1312" alt="screenshot of component playground" src="https://github.com/user-attachments/assets/3e5abd07-0a3c-4c3b-8351-5107beb4fb10"> -->
+**ReelBreak** is a Screenpipe pipe designed to help you track and manage your usage of short-form video platforms like **YouTube Shorts**, **Instagram Reels**, and **TikTok**. With daily usage goals, session analysis, and customizable intervention thresholds, ReelBreak empowers you to take control of your screen time and maintain a healthy digital balance.
 
-## features
+This project is built as a **Next.js application** and integrates seamlessly with the **Screenpipe** platform to monitor and analyze your activity in real-time.
 
-- **interactive component display**: view rendered components in action
-- **code inspection**: examine the full source code of each component
-- **raw output**: see the raw api responses and data
-- **ai prompt visibility**: view the prompts and context used to generate components
-- **collapsible interface**: toggle component visibility for a cleaner workspace
+---
 
-## usage
+## 🚀 Features
 
-the playground allows you to:
+- **Usage Tracking**: Monitor time spent on short-form video platforms.
+- **Daily Goal Setting**: Set and track a daily usage limit (default: 30 minutes).
+- **Session Analysis**: View detailed session breakdowns by date, including start/end times and platform usage.
+- **Intervention Alerts**: Receive desktop notifications when exceeding a customizable threshold (default: 15 minutes).
+- **Responsive Dashboard**: Visualize usage stats, platform breakdowns, and weekly trends with interactive charts.
+- **Dark Mode Support**: Enjoy a seamless experience with a toggleable dark theme.
+- **Settings Management**: Adjust goals and preferences via an intuitive settings page.
 
-1. view rendered components in their intended state
-2. inspect the raw output from api calls
-3. study the complete component code
-4. examine the ai prompts and context used to generate components
+---
 
-## component structure
+## 📦 Prerequisites
 
-each playground card includes:
-- component title and collapsible interface
-- tabs for different views (rendered output, raw output, code, ai prompt)
-- copy functionality for sharing prompts and context
+- [Node.js (v18 or later)](https://nodejs.org/)
+- [Bun (optional, for faster builds)](https://bun.sh/)
+- [Screenpipe](https://screenpi.pe/) installed locally
+- Compatible OS: Windows, macOS, or Linux
 
-## getting started
+---
 
-1. install this pipe from UI and play with it
-2. follow docs to create your pipe (it will create this app) (https://docs.screenpi.pe/docs/plugins)
-3. modify code from ready-to-use-examples directory
+## ⚙️ Installation
 
+### 1. Clone the Repository
+```bash
+git clone https://github.com/your-username/devishmittal-reelbreak.git
+cd devishmittal-reelbreak
+```
+
+### 2. Install Dependencies
+
+Using **Bun** (recommended):
+```bash
+bun install
+```
+
+Or using **npm**:
+```bash
+npm install
+```
+
+### 3. Set Up Screenpipe
+
+Install the Screenpipe CLI:
+```bash
+curl -fsSL get.screenpi.pe/cli | sh
+```
+
+Ensure Screenpipe is running locally and capturing screen data.
+
+### 4. Install the Pipe
+
+Build the project:
+```bash
+bun run build
+```
+
+Install the pipe in Screenpipe:
+```bash
+screenpipe install ./devishmittal-reelbreak
+```
+
+Enable the pipe:
+```bash
+screenpipe enable devishmittal-reelbreak
+```
+
+### 5. Run Locally
+
+Start the development server:
+```bash
+bun dev
+```
+
+Open your browser and go to: [http://localhost:3000](http://localhost:3000) to access the dashboard.
+
+---
+
+## 📊 Usage
+
+- **Dashboard**: View your daily usage, current session, session count, and weekly trends.
+- **Sessions**: Explore detailed session data by selecting a date.
+- **Settings**: Customize your daily goal and intervention threshold, and manage preferences.
+- **Notifications**: Receive alerts when you exceed your intervention threshold (configurable).
+
+
+---
+
+
+## 🙏 Acknowledgments
+
+- Built with **Next.js** and **Tailwind CSS**
+- Powered by **Screenpipe** for screen activity tracking
+- Thanks to the **open-source community** for inspiration and tools!
+```
