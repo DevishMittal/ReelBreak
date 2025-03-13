@@ -6,5 +6,16 @@
   "author": "Devish Mittal",
   "paid": false,
   "category": "productivity",
-  "entry": "./app/api/intervene/route.ts"
+  "entry": "./app/api/intervene/route.ts",
+  "buildStatus": "success",
+  "crons": [
+    {
+      "path": "/api/intervene",
+      "schedule": "0 */5 * * * *"
+    }
+  ],
+  "enabled": true,
+  "is_nextjs": true,
+  "port": 47227,
+  "source": "D:/ReelBreak"
 }
