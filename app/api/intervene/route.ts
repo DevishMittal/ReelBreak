@@ -59,13 +59,27 @@ export async function GET() {
     const newUsage = usage.filter(entry => !existingTimestamps.has(entry.timestamp));
     const updatedHistory = [...settings.usageHistory, ...newUsage];
     const cleanHistory = updatedHistory.filter(entry => entry.duration > 0);
-    await updateSettings({ usageHistory: cleanHistory });
 
+    // Daily reset logic
     const today = new Date().toISOString().split("T")[0];
+    const lastResetDate = new Date(settings.lastReset || "1970-01-01").toISOString().split("T")[0];
+    if (lastResetDate !== today) {
+      console.log(`[Intervene] Resetting usageHistory for ${today}`);
+      const todayHistory = cleanHistory.filter(
+        (entry) => new Date(entry.timestamp).toISOString().split("T")[0] === today
+      );
+      cleanHistory.length = 0; // Clear old data
+      cleanHistory.push(...todayHistory); // Keep only today's data
+      await updateSettings({ usageHistory: cleanHistory, lastReset: new Date().toISOString() });
+    } else {
+      await updateSettings({ usageHistory: cleanHistory });
+    }
+
+    // Calculate today’s usage
     const todayUsage = cleanHistory
       .filter((entry) => new Date(entry.timestamp).toISOString().split("T")[0] === today)
       .reduce((sum, entry) => sum + (entry.duration || 0), 0) / 60;
-    console.log("Total usage today (minutes):", todayUsage);
+    console.log(`[Intervene] Total usage today (minutes): ${todayUsage.toFixed(2)} for ${today}`);
 
     if (todayUsage > settings.interventionThreshold) {
       try {
@@ -73,12 +87,13 @@ export async function GET() {
           title: "ScreenBreak Alert",
           body: `You've spent ${Math.round(todayUsage)} minutes on short-form videos today—time for a break?`,
         });
+        await updateSettings({ lastNotified: new Date().toISOString() });
       } catch (notifyError) {
         console.error("Notification failed:", notifyError);
       }
     }
 
-    return NextResponse.json({ usageMinutes: todayUsage, usage });
+    return NextResponse.json({ usageMinutes: todayUsage, usage: cleanHistory });
   } catch (error) {
     console.error("Intervene route error:", error);
     return NextResponse.json({ usageMinutes: 0, usage: [], error: error.message }, { status: 500 });

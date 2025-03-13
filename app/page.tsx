@@ -42,24 +42,28 @@ export default function Dashboard() {
   async function fetchData() {
     try {
       setLoading(true);
-      const res = await fetch("/api/intervene");
-      if (!res.ok) throw new Error("Failed to fetch intervention data");
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      setUsage(data.usage || []);
-      const newUsageMinutes = Math.max(data.usageMinutes || 0, 0);
-      setTodayUsage(newUsageMinutes);
-      setShowOverlay(newUsageMinutes > settings.interventionThreshold);
+    const res = await fetch("/api/intervene");
+    if (!res.ok) throw new Error("Failed to fetch intervention data");
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    setUsage(data.usage || []);
+    const newUsageMinutes = Math.max(data.usageMinutes || 0, 0);
+    setTodayUsage(newUsageMinutes);
 
-      const settingsRes = await fetch("/api/settings");
-      if (!settingsRes.ok) throw new Error("Failed to fetch settings");
-      const updatedSettings = await settingsRes.json();
-      console.log("Fetched settings:", updatedSettings); // Debug log
-      setSettings({
-        dailyGoal: updatedSettings.dailyGoal ?? 30,
-        interventionThreshold: updatedSettings.interventionThreshold ?? 15,
-        usageHistory: updatedSettings.usageHistory ?? [],
-      });
+    const settingsRes = await fetch("/api/settings");
+    if (!settingsRes.ok) throw new Error("Failed to fetch settings");
+    const updatedSettings = await settingsRes.json();
+    console.log("Fetched settings:", updatedSettings);
+    setSettings({
+      dailyGoal: updatedSettings.dailyGoal ?? 30,
+      interventionThreshold: updatedSettings.interventionThreshold ?? 15,
+      usageHistory: updatedSettings.usageHistory ?? [],
+    });
+
+    console.log("todayUsage from intervene:", newUsageMinutes, "dailyGoal from settings:", updatedSettings.dailyGoal);
+    const shouldShowOverlay = newUsageMinutes > updatedSettings.dailyGoal;
+    console.log("Should show overlay:", shouldShowOverlay);
+    setShowOverlay(shouldShowOverlay);
 
       // Calculate platform breakdown, current session, and session count from usageHistory
       const today = new Date().toISOString().split("T")[0];
@@ -306,7 +310,7 @@ export default function Dashboard() {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-2xl transform transition-all duration-300 hover:scale-105">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Usage Limit Exceeded</h2>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
-              You’ve spent {Math.round(todayUsage)} minutes today, exceeding your {settings.interventionThreshold}-minute threshold!
+              You’ve spent {Math.round(todayUsage)} minutes today, exceeding your {settings.dailyGoal}-minute threshold!
             </p>
             <button
               onClick={() => setShowOverlay(false)}
