@@ -146,7 +146,7 @@ export default function Dashboard() {
             <CardContent>
               <p className="text-2xl font-semibold">{Math.round(todayUsage)} minutes</p>
               <p className="text-sm text-green-600">
-                {Math.max(settings.dailyGoal - todayUsage, 0)} minutes remaining
+                {Math.max(settings.dailyGoal - todayUsage, 0).toFixed(1)} minutes remaining
               </p>
             </CardContent>
           </Card>
@@ -157,7 +157,7 @@ export default function Dashboard() {
             <CardContent>
               <p className="text-2xl font-semibold">{Math.round(currentSession)} minutes</p>
               <p className="text-sm text-green-600">
-                {Math.max(settings.interventionThreshold - currentSession, 0)} minutes remaining
+                {Math.max(settings.interventionThreshold - currentSession, 0).toFixed(1)} minutes remaining
               </p>
             </CardContent>
           </Card>
@@ -195,7 +195,7 @@ export default function Dashboard() {
                   data={platformBreakdown}
                   margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                 >
-                  <XAxis type="number" domain={[0, Math.max(...platformBreakdown.map(d => d.minutes)) * 1.2]} />
+                  <XAxis type="number" domain={[0, Number(Math.max(...platformBreakdown.map(d => d.minutes)).toFixed(1)) * 1.2]} />
                   <YAxis dataKey="name" type="category" width={150} />
                   <Tooltip formatter={(value: number) => `${value.toFixed(1)} minutes`} />
                   <Legend />
