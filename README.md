@@ -1,6 +1,3 @@
-Sure! Here's your content nicely formatted into a `README.md` file you can paste directly into VS Code:
-
-```markdown
 # ReelBreak
 
 **ReelBreak** is a Screenpipe pipe designed to help you track and manage your usage of short-form video platforms like **YouTube Shorts**, **Instagram Reels**, and **TikTok**. With daily usage goals, session analysis, and customizable intervention thresholds, ReelBreak empowers you to take control of your screen time and maintain a healthy digital balance.
