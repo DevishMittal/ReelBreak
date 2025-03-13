@@ -1,8 +1,10 @@
 {
-  "crons": [
-    {
-      "path": "/api/intervene",
-      "schedule": "0 */5 * * *" 
-    }
-  ]
+  "id": "devishmittal-reelbreak",
+  "name": "ReelBreak",
+  "description": "Track and manage short-form video usage (YouTube Shorts, Instagram Reels, TikTok) with daily goals and session analysis.",
+  "version": "1.0.0",
+  "author": "Devish Mittal",
+  "paid": false,
+  "category": "productivity",
+  "entry": "./app/api/intervene/route.ts"
 }
