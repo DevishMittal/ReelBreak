@@ -41,39 +41,7 @@ Using **Bun** (recommended):
 ```bash
 bun install
 ```
-
-Or using **npm**:
-```bash
-npm install
-```
-
-### 3. Set Up Screenpipe
-
-Install the Screenpipe CLI:
-```bash
-curl -fsSL get.screenpi.pe/cli | sh
-```
-
-Ensure Screenpipe is running locally and capturing screen data.
-
-### 4. Install the Pipe
-
-Build the project:
-```bash
-bun run build
-```
-
-Install the pipe in Screenpipe:
-```bash
-screenpipe install ./devishmittal-reelbreak
-```
-
-Enable the pipe:
-```bash
-screenpipe enable devishmittal-reelbreak
-```
-
-### 5. Run Locally
+### 3. Run Locally
 
 Start the development server:
 ```bash
@@ -100,4 +68,3 @@ Open your browser and go to: [http://localhost:3000](http://localhost:3000) to a
 - Built with **Next.js** and **Tailwind CSS**
 - Powered by **Screenpipe** for screen activity tracking
 - Thanks to the **open-source community** for inspiration and tools!
-```
