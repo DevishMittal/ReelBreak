@@ -65,7 +65,7 @@ export default function Sidebar() {
       </nav>
 
       {/* User Profile Section */}
-      <div className="mt-auto pt-4 border-t border-purple-600">
+      {/* <div className="mt-auto pt-4 border-t border-purple-600">
         <div className={`flex items-center ${isOpen ? "space-x-3" : "justify-center"}`}>
           <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-700 font-bold">
             JD
@@ -77,7 +77,7 @@ export default function Sidebar() {
             </div>
           )}
         </div>
-      </div>
+      </div> */}
     </aside>
   );
 }
