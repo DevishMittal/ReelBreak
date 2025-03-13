@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 import { FiSettings } from "react-icons/fi";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -32,7 +32,7 @@ export default function Dashboard() {
   const [todayUsage, setTodayUsage] = useState(0);
   const [currentSession, setCurrentSession] = useState(0);
   const [sessionCount, setSessionCount] = useState(0);
-  const [platformBreakdown, setPlatformBreakdown] = useState<[string, number][]>([]);
+  const [platformBreakdown, setPlatformBreakdown] = useState<{ name: string; minutes: number }[]>([]);
   const [weeklyTrend, setWeeklyTrend] = useState<WeeklyTrend[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,13 +67,13 @@ export default function Dashboard() {
           new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
         );
 
-      // Platform Breakdown
+      // Platform Breakdown (converted to minutes and formatted for BarChart)
       const breakdown = Object.entries(
         todayEntries.reduce((acc: { [key: string]: number }, entry: UsageEntry) => {
           acc[entry.platform] = (acc[entry.platform] || 0) + entry.duration;
           return acc;
         }, {})
-      );
+      ).map(([name, total]) => ({ name, minutes: total / 60 }));
       setPlatformBreakdown(breakdown);
 
       // Session logic: Group entries by gaps > 5 minutes
@@ -137,7 +137,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="container mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6">ReelBreak Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-6">ScreenBreak Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <Card>
             <CardHeader>
@@ -189,18 +189,23 @@ export default function Dashboard() {
               <CardTitle className="text-lg font-semibold">Platform Breakdown</CardTitle>
             </CardHeader>
             <CardContent>
-              {platformBreakdown.length > 0 ? (
-                <ul className="space-y-2">
-                  {platformBreakdown.map(([platform, total]) => (
-                    <li key={platform} className="flex justify-between">
-                      <span>{platform}</span>
-                      <span>{(total / 60).toFixed(1)} minutes</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-gray-500">No platforms available yet</p>
-              )}
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart
+                  layout="vertical"
+                  data={platformBreakdown}
+                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                >
+                  <XAxis type="number" domain={[0, Math.max(...platformBreakdown.map(d => d.minutes)) * 1.2]} />
+                  <YAxis dataKey="name" type="category" width={150} />
+                  <Tooltip formatter={(value: number) => `${value.toFixed(1)} minutes`} />
+                  <Legend />
+                  <Bar dataKey="minutes" fill="#F87171">
+                    {platformBreakdown.map((entry, index) => (
+                      <Cell key={`cell-${index}`} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
           <Card>
@@ -211,11 +216,11 @@ export default function Dashboard() {
               <div className="relative w-32 h-32">
                 <Progress
                   value={(todayUsage / settings.dailyGoal) * 100}
-                  className="w-32 h-32 rounded-full"
+                  className=" w-32 h-32 rounded-full"
                   style={{ transform: "rotate(-90deg)" }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-xl font-semibold">{Math.round(todayUsage)}/{settings.dailyGoal}</p>
+                  <p className="text-blue-500 dark:text-sky-400 text-xl font-semibold">{Math.round(todayUsage)}/{settings.dailyGoal}</p>
                 </div>
               </div>
               <div className="ml-4">
