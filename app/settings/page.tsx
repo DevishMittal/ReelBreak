@@ -19,27 +19,37 @@ export default function Settings() {
 
   useEffect(() => {
     async function fetchSettings() {
-      const res = await fetch("/api/settings");
-      if (res.ok) {
+      try {
+        const res = await fetch("/api/settings");
+        if (!res.ok) throw new Error("Failed to fetch settings");
         const data = await res.json();
+        console.log("Fetched settings in settings page:", data); // Debug log
         setSettings({
           dailyGoal: data.dailyGoal ?? 30,
           interventionThreshold: data.interventionThreshold ?? 15,
         });
+      } catch (error) {
+        console.error("Error fetching settings:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
     fetchSettings();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch("/api/settings", {
-      method: "POST",
-      body: JSON.stringify(settings),
-      headers: { "Content-Type": "application/json" },
-    });
-    router.push("/");
+    try {
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        body: JSON.stringify(settings),
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!res.ok) throw new Error("Failed to save settings");
+      router.push("/");
+    } catch (error) {
+      console.error("Error saving settings:", error);
+    }
   };
 
   if (loading) return <div>Loading...</div>;

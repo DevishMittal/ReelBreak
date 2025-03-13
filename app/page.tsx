@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { FiSettings } from "react-icons/fi";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
 interface UsageEntry {
@@ -32,6 +32,7 @@ export default function Dashboard() {
   const [todayUsage, setTodayUsage] = useState(0);
   const [currentSession, setCurrentSession] = useState(0);
   const [sessionCount, setSessionCount] = useState(0);
+  const [platformBreakdown, setPlatformBreakdown] = useState<[string, number][]>([]);
   const [weeklyTrend, setWeeklyTrend] = useState<WeeklyTrend[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -51,17 +52,29 @@ export default function Dashboard() {
       const settingsRes = await fetch("/api/settings");
       if (!settingsRes.ok) throw new Error("Failed to fetch settings");
       const updatedSettings = await settingsRes.json();
+      console.log("Fetched settings:", updatedSettings); // Debug log
       setSettings({
         dailyGoal: updatedSettings.dailyGoal ?? 30,
         interventionThreshold: updatedSettings.interventionThreshold ?? 15,
         usageHistory: updatedSettings.usageHistory ?? [],
       });
 
-      // Calculate current session and session count
+      // Calculate platform breakdown, current session, and session count from usageHistory
       const today = new Date().toISOString().split("T")[0];
-      const todayEntries = updatedSettings.usageHistory?.filter((entry: UsageEntry) =>
-        new Date(entry.timestamp).toISOString().split("T")[0] === today
-      ) || [];
+      const todayEntries = (updatedSettings.usageHistory || [])
+        .filter((entry: UsageEntry) => new Date(entry.timestamp).toISOString().split("T")[0] === today)
+        .sort((a: UsageEntry, b: UsageEntry) => 
+          new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+        );
+
+      // Platform Breakdown
+      const breakdown = Object.entries(
+        todayEntries.reduce((acc: { [key: string]: number }, entry: UsageEntry) => {
+          acc[entry.platform] = (acc[entry.platform] || 0) + entry.duration;
+          return acc;
+        }, {})
+      );
+      setPlatformBreakdown(breakdown);
 
       // Session logic: Group entries by gaps > 5 minutes
       const sessions: UsageEntry[][] = [];
@@ -85,7 +98,7 @@ export default function Dashboard() {
 
       // Current session: Sum durations of the last session
       const lastSession = sessions[sessions.length - 1] || [];
-      const sessionDuration = lastSession.reduce((sum, entry) => sum + entry.duration, 0) / 60;
+      const sessionDuration = lastSession.reduce((sum: number, entry: UsageEntry) => sum + entry.duration, 0) / 60;
       setCurrentSession(sessionDuration);
 
       // Weekly trend: Calculate daily usage for the past 7 days
@@ -94,16 +107,17 @@ export default function Dashboard() {
         const date = new Date();
         date.setDate(date.getDate() - i);
         const dateStr = date.toISOString().split("T")[0];
-        const dailyUsage = (updatedSettings.usageHistory?.filter((entry: UsageEntry) =>
-          new Date(entry.timestamp).toISOString().split("T")[0] === dateStr
-        ) || []).reduce((sum: number, entry: UsageEntry) => sum + entry.duration, 0) / 60;
+        const dailyUsage = ((updatedSettings.usageHistory || [])
+          .filter((entry: UsageEntry) => new Date(entry.timestamp).toISOString().split("T")[0] === dateStr)
+          .reduce((sum: number, entry: UsageEntry) => sum + entry.duration, 0) / 60) || 0;
         weeklyData.push({
           date: date.toLocaleDateString("en-US", { weekday: "short" }),
           dailyUsage: Math.round(dailyUsage),
-          dailyGoal: updatedSettings.dailyGoal,
+          dailyGoal: updatedSettings.dailyGoal || 30,
         });
       }
       setWeeklyTrend(weeklyData);
+      console.log("Weekly trend data:", weeklyData); // Debug log
     } catch (err) {
       setError(err.message);
     } finally {
@@ -123,7 +137,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="container mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6">ScreenBreak Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-6">ReelBreak Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <Card>
             <CardHeader>
@@ -175,14 +189,9 @@ export default function Dashboard() {
               <CardTitle className="text-lg font-semibold">Platform Breakdown</CardTitle>
             </CardHeader>
             <CardContent>
-              {usage.length > 0 ? (
+              {platformBreakdown.length > 0 ? (
                 <ul className="space-y-2">
-                  {Object.entries(
-                    usage.reduce((acc: { [key: string]: number }, entry: UsageEntry) => {
-                      acc[entry.platform] = (acc[entry.platform] || 0) + entry.duration;
-                      return acc;
-                    }, {})
-                  ).map(([platform, total]) => (
+                  {platformBreakdown.map(([platform, total]) => (
                     <li key={platform} className="flex justify-between">
                       <span>{platform}</span>
                       <span>{(total / 60).toFixed(1)} minutes</span>
