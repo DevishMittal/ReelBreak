@@ -219,14 +219,14 @@ export default function Dashboard() {
                     type="number"
                     domain={[0, Number(Math.max(...platformBreakdown.map((d) => d.minutes)).toFixed(1)) * 1.2]}
                     stroke="#4B5563"
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 16 }}
                   />
-                  <YAxis dataKey="name" type="category" width={150} stroke="#4B5563" tick={{ fontSize: 12 }} />
+                  <YAxis dataKey="name" type="category" width={150} stroke="#4B5563" tick={{ fontSize: 16, fill: "currentColor" }} />
                   <Tooltip
                     contentStyle={{ backgroundColor: "rgba(31, 41, 55, 0.9)", color: "#fff" }}
                     formatter={(value: number) => `${value.toFixed(1)} minutes`}
                   />
-                  <Legend wrapperStyle={{ fontSize: 12 }} />
+                  <Legend wrapperStyle={{ fontSize: 16 }} />
                   <Bar dataKey="minutes" fill="#F87171">
                     {platformBreakdown.map((entry, index) => (
                       <Cell key={`cell-${index}`} />

@@ -114,7 +114,7 @@ export default function Sessions() {
             {sessions.length > 0 ? (
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-gray-200">
+                  <tr className="bg-gray-400">
                     <th className="p-2 border-b">Start Time</th>
                     <th className="p-2 border-b">End Time</th>
                     <th className="p-2 border-b">Duration (minutes)</th>
