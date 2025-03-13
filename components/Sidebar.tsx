@@ -82,20 +82,6 @@ export default function Sidebar() {
         </ul>
       </nav>
 
-      {/* User Profile Section */}
-      <div className="mt-auto pt-4 border-t border-purple-600">
-        <div className={`flex items-center ${isOpen ? "space-x-3" : "justify-center"}`}>
-          <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 font-bold">
-            JD
-          </div>
-          {isOpen && (
-            <div>
-              <p className="text-sm font-medium">John Doe</p>
-              <p className="text-xs text-gray-400 dark:text-gray-500">john.doe@example.com</p>
-            </div>
-          )}
-        </div>
-      </div>
     </aside>
   );
 }
