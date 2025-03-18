@@ -80,7 +80,7 @@ export default function Sessions() {
 
       setSessions(sessionList);
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
     } finally {
       setLoading(false);
     }
@@ -116,7 +116,7 @@ export default function Sessions() {
           <label className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Select Date</label>
           <DatePicker
             selected={selectedDate}
-            onChange={(date: Date) => setSelectedDate(date)}
+            onChange={(date: Date | null) => date && setSelectedDate(date)}
             dateFormat="yyyy-MM-dd"
             className="p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-colors duration-200"
           />
