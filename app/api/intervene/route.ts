@@ -26,7 +26,9 @@ export async function GET() {
       "youtube.com/shorts": "YouTube Shorts",
       "instagram.com/reels": "Instagram Reels",
       "tiktok.com": "TikTok",
-    };
+    } as const;
+
+    type PlatformKey = keyof typeof PLATFORMS;
 
     if (results && results.data?.length) {
       const sortedData = results.data.sort((a, b) => 
@@ -35,7 +37,7 @@ export async function GET() {
       for (const item of sortedData) {
         if (item.type !== "OCR" || !item.content.browserUrl) continue;
         const url = item.content.browserUrl.toLowerCase();
-        const platform = Object.keys(PLATFORMS).find((key) => url.includes(key));
+        const platform = Object.keys(PLATFORMS).find((key) => url.includes(key)) as PlatformKey | undefined;
         if (platform) {
           const currentTimestamp = item.content.timestamp;
           if (settings.lastReset && new Date(currentTimestamp) < new Date(settings.lastReset)) continue;
@@ -43,7 +45,7 @@ export async function GET() {
             const duration = (new Date(currentTimestamp).getTime() - new Date(lastTimestamp).getTime()) / 1000;
             if (duration > 0) {
               usage.push({
-                platform: PLATFORMS[platform as keyof typeof PLATFORMS],
+                platform: PLATFORMS[platform], // Now TypeScript knows platform is a valid key
                 timestamp: lastTimestamp,
                 duration,
               });
