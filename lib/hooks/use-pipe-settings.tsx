@@ -98,6 +98,7 @@ import { pipe } from "@screenpipe/js";
 import type { Settings as ScreenpipeSettings } from "@screenpipe/js";
 
 interface ScreenBreakSettings {
+  exampleSetting: string;
   usageHistory: { platform: string; timestamp: string; duration: number }[];
   dailyGoal: number; // minutes
   interventionThreshold: number; // minutes
