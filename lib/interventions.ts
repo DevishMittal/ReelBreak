@@ -1,5 +1,12 @@
 import { pipe } from "@screenpipe/js";
 
+// Define the UsageEntry interface or import it
+interface UsageEntry {
+  platform: string;
+  timestamp: string;
+  duration: number;
+}
+
 export async function checkAndNotify(usageHistory: UsageEntry[], threshold: number) {
   const today = new Date().toISOString().split("T")[0];
   const todayUsage = usageHistory
