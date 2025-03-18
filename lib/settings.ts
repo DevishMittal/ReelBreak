@@ -4,6 +4,7 @@ export interface ScreenBreakSettings {
     dailyGoal: number;
     interventionThreshold: number;
     lastReset?: string; // Optional timestamp of last reset
+    lastNotified?: string; // Added lastNotified property
   }
   
   const DEFAULT_SETTINGS: ScreenBreakSettings = {
