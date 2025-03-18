@@ -17,7 +17,7 @@ export async function GET() {
       });
     } catch (queryError) {
       console.error("Screenpipe query failed:", queryError);
-      return NextResponse.json({ usageMinutes: 0, usage: [], error: queryError.message }, { status: 500 });
+      return NextResponse.json({ usageMinutes: 0, usage: [], error: queryError instanceof Error ? queryError.message : "Unknown error" }, { status: 500 });
     }
 
     const usage = [];
@@ -43,7 +43,7 @@ export async function GET() {
             const duration = (new Date(currentTimestamp).getTime() - new Date(lastTimestamp).getTime()) / 1000;
             if (duration > 0) {
               usage.push({
-                platform: PLATFORMS[platform],
+                platform: PLATFORMS[platform as keyof typeof PLATFORMS],
                 timestamp: lastTimestamp,
                 duration,
               });
@@ -96,6 +96,10 @@ export async function GET() {
     return NextResponse.json({ usageMinutes: todayUsage, usage: cleanHistory });
   } catch (error) {
     console.error("Intervene route error:", error);
-    return NextResponse.json({ usageMinutes: 0, usage: [], error: error.message }, { status: 500 });
+    return NextResponse.json({ 
+      usageMinutes: 0, 
+      usage: [], 
+      error: error instanceof Error ? error.message : "Unknown error" 
+    }, { status: 500 });
   }
 }
