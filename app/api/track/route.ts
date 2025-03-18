@@ -11,7 +11,9 @@ const PLATFORMS = {
   "youtube.com/shorts": "YouTube Shorts",
   "instagram.com/reels": "Instagram Reels",
   "tiktok.com": "TikTok",
-};
+} as const;
+
+type PlatformKey = keyof typeof PLATFORMS;
 
 export async function GET() {
   const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
@@ -39,7 +41,7 @@ export async function GET() {
       if (item.type !== "OCR" || !item.content.browserUrl) continue;
 
       const url = item.content.browserUrl.toLowerCase();
-      const platform = Object.keys(PLATFORMS).find((key) => url.includes(key));
+      const platform = Object.keys(PLATFORMS).find((key) => url.includes(key)) as PlatformKey | undefined;
 
       if (platform) {
         const currentTimestamp = item.content.timestamp;
@@ -60,6 +62,7 @@ export async function GET() {
     return NextResponse.json({ usage });
   } catch (error) {
     console.error("Error querying Screenpipe:", error);
-    return NextResponse.json({ usage: [], error: error.message }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+    return NextResponse.json({ usage: [], error: errorMessage }, { status: 500 });
   }
 }
