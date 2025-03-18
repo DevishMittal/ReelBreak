@@ -79,7 +79,10 @@ export default function Dashboard() {
           acc[entry.platform] = (acc[entry.platform] || 0) + entry.duration;
           return acc;
         }, {})
-      ).map(([name, total]) => ({ name,minutes: parseFloat((total / 60).toFixed(1)) }));
+      ).map(([name, total]) => ({ 
+        name, 
+        minutes: parseFloat(((total as number) / 60).toFixed(1)) 
+      }));
       setPlatformBreakdown(breakdown);
 
       // Session logic
@@ -125,7 +128,7 @@ export default function Dashboard() {
       setWeeklyTrend(weeklyData);
       console.log("Weekly trend data:", weeklyData); // Debug log
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
     } finally {
       setLoading(false);
     }
