@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { pipe } from "@screenpipe/js";
-import { getSettings, updateSettings } from "@/lib/settings";
+import { getSettings, updateSettings, ScreenBreakSettings } from "@/lib/settings";
 
 export async function GET() {
   try {
